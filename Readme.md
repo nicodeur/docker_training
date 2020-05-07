@@ -58,3 +58,12 @@ docker-compose up -d
 ```
 
 See url http://localhost:3001/users and http://localhost:3001/
+
+
+# Add this project on Jenkins
+
+See [here](jenkins)
+
+# Run this project on Kubernetes
+
+See [here](k8s)
