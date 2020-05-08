@@ -8,8 +8,16 @@ def buildAndPushDocker(workingdir, appname) {
     }
 }
 
+def kubectl(opt, namespace) {
+    withCredentials ( [string(credentialsId: 'K8S_TOKEN', variable: 'K8S_TOKEN')] ) {
+        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace "
+    }
+}
+
+
 def deploy() {
-    echo "Put your deployment code here"
+    kubectl("delete -f k8s", 'nicolas')
+    kubectl("create -f k8s", 'nicolas')
 }
 
 pipeline {
@@ -33,7 +41,12 @@ pipeline {
         }
 
         stage('Deploy on K8s') {
-            agent any
+            agent {
+                docker {
+                    image 'bitnami/kubectl:latest'
+                    args '--entrypoint ""'
+                }
+            }
             steps {
                 deploy()
             }

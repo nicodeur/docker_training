@@ -10,7 +10,7 @@ console.log("Our application is launching!");
 app.get('/', function (req, res) {
   console.log("youpi");
   //send the response
-  res.send("Hello you!");
+  res.send("Hello you! This is updated by Jenkins. Good job !");
 })
 
 //we launch the webserver on port 3000 and log when it's up

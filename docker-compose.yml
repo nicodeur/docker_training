@@ -1,10 +1,10 @@
 version: '2'
 services:
   tutobdd:
-    #image: tutobdd
-    build: bdd
-    volumes:
-      -  mysql_datas:/bitnami/mysql/data
+    image: nicodeur/k8s-bdd:latest
+    #build: bdd
+#    volumes:
+#      -  mysql_datas:/bitnami/mysql/data
     environment: 
       - MYSQL_ROOT_PASSWORD=root
   tutoapi:
