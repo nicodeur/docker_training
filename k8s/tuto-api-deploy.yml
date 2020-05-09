@@ -1,16 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-  creationTimestamp: "2020-05-08T10:40:03Z"
-  generation: 1
   labels:
     app: tuto-api
   name: tuto-api
-  namespace: nicolas
-  resourceVersion: "563003"
-  selfLink: /apis/extensions/v1beta1/namespaces/nicolas/deployments/tuto-api
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -42,7 +35,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: db-user-pass
-              key: username
+              key: password
         - name: MYSQL_DATABASE
           value: workshop
         resources: {}
@@ -53,21 +46,3 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-status:
-  conditions:
-  - lastTransitionTime: "2020-05-08T10:40:03Z"
-    lastUpdateTime: "2020-05-08T10:40:14Z"
-    message: ReplicaSet "tuto-api-75c5767ff4" has successfully progressed.
-    reason: NewReplicaSetAvailable
-    status: "True"
-    type: Progressing
-  - lastTransitionTime: "2020-05-08T10:40:47Z"
-    lastUpdateTime: "2020-05-08T10:40:47Z"
-    message: Deployment does not have minimum availability.
-    reason: MinimumReplicasUnavailable
-    status: "False"
-    type: Available
-  observedGeneration: 1
-  replicas: 1
-  unavailableReplicas: 1
-  updatedReplicas: 1

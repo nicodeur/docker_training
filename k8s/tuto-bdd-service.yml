@@ -1,15 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: "2020-05-08T10:56:52Z"
   labels:
     app: tuto-bdd
   name: tuto-bdd
-  namespace: nicolas
-  resourceVersion: "566384"
-  selfLink: /api/v1/namespaces/nicolas/services/tuto-bdd
 spec:
-  clusterIP: 10.3.252.27
   ports:
   - port: 3306
     protocol: TCP
@@ -18,5 +13,4 @@ spec:
     app: tuto-bdd
   sessionAffinity: None
   type: ClusterIP
-status:
-  loadBalancer: {}
+
