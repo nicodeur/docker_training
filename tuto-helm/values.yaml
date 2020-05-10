@@ -1,0 +1,10 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+database:
+  name: workshop
+  username: root
+  password: root
+
+exposeUrl: nicolas-tuto-helm.formationk8.projet-davidson.fr

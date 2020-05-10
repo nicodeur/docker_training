@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: tuto-api
-  name: tuto-api
+    app: {{ .Release.Name }}-bdd
+  name: {{ .Release.Name }}-bdd
 spec:
   ports:
-  - port: 3000
+  - port: 3306
     protocol: TCP
-    targetPort: 3000
+    targetPort: 3306
   selector:
-    app: tuto-api
+    app: {{ .Release.Name }}-bdd
   sessionAffinity: None
   type: ClusterIP

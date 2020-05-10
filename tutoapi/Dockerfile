@@ -17,3 +17,5 @@ RUN npm install -g --save wait-for-mysql
 
 CMD wait-for-mysql -h $MYSQL_HOST -u $MYSQL_USER -P $MYSQL_PASSWORD -T 60000 && node app.js
 
+
+wait-for-mysql -h  tuto-helm-bdd -u root -P root
