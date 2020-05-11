@@ -8,16 +8,15 @@ def buildAndPushDocker(workingdir, appname) {
     }
 }
 
-def kubectl(opt, namespace) {
+def helm(opt, namespace) {
     withCredentials ( [string(credentialsId: 'K8S_TOKEN', variable: 'K8S_TOKEN')] ) {
-        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace "
+        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  helm --insecure-skip-tls-verify --token='$K8S_TOKEN' $opt --namespace $namespace "
     }
 }
 
 
 def deploy() {
-    kubectl("delete -f k8s", 'nicolas')
-    kubectl("create -f k8s", 'nicolas')
+    helm("install tuto-helm k8s", 'nicolas')
 }
 
 pipeline {
@@ -43,7 +42,7 @@ pipeline {
         stage('Deploy on K8s') {
             agent {
                 docker {
-                    image 'bitnami/kubectl:latest'
+                    image 'alpine/helm:latest'
                     args '--entrypoint ""'
                 }
             }
