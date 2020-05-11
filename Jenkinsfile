@@ -10,11 +10,7 @@ def buildAndPushDocker(workingdir, appname) {
 
 def helm(opt, namespace) {
     withCredentials([file(credentialsId: 'CONFIG_K8S', variable: 'CONFIG_K8S')]) {
-        sh "mkdir ~/.kube"
-        dir('/root/~/.kube') {
-            sh "use $CONFIG_K8S && ls"
-        }
-        sh "helm $opt"
+        sh "helm --kubeconfig $CONFIG_K8S $opt"
     }
 }
 
