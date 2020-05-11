@@ -18,8 +18,11 @@ select : "installer les plugins suggérés"
 
 You have to add several secret (use http://localhost:9085/credentials/store/system/domain/_/newCredentials) :
 * ID : "DOCKER_HUB_CREDENTIAL" and set your Username / Password
-
+* K8S_TOKEN: your valid token auth (secret text)
+* CONFIG_K8S: your `~/.kube/config` file (secret file)
 
 ## create the pipeline
 
 Go to blue ocean, and click on Create Pipeline
+
+

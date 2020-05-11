@@ -9,14 +9,18 @@ def buildAndPushDocker(workingdir, appname) {
 }
 
 def helm(opt, namespace) {
-    withCredentials ( [string(credentialsId: 'K8S_TOKEN', variable: 'K8S_TOKEN')] ) {
-        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  helm --insecure-skip-tls-verify --token='$K8S_TOKEN' $opt --namespace $namespace "
+    withCredentials([file(credentialsId: 'CONFIG_K8S', variable: 'CONFIG_K8S')]) {
+        sh "mkdir ~/.kube"
+        dir('/root/~/.kube') {
+            sh "use $CONFIG_K8S && ls"
+        }
+        sh "helm $opt"
     }
 }
 
 
 def deploy() {
-    helm("install tuto-helm k8s", 'nicolas')
+    helm("upgrade tuto-helm tuto-helm", 'nicolas')
 }
 
 pipeline {
