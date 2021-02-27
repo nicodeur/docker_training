@@ -38,4 +38,20 @@ npm install
 npm run start
 ```
 
+## launch with docker
 
+```
+cd bdd
+docker build -t tutobdd .
+
+cd ../tutoapi
+npm install
+docker build -t tutoapi.
+
+# with docker run 
+docker run --name tutomysql -d -v /Users/myname/myfappfolder/mysqldata/:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root tutobdd 
+docker run --name tutoapi -d -p 3001:3000 --link tutomysql:mysql-container -e MYSQL_HOST=mysql-container -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=workshop tutoapi
+
+```
+
+See url http://localhost:3001/users and http://localhost:3001/
