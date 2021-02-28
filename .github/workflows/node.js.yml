@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Push docker databse
-        uses: pushdocker@v1
+        uses: libperso/pushdocker@v1
         with:
           directory: bdd
           tag: nicodeur/tutobdd:latest
