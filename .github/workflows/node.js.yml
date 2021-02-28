@@ -34,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: tutoapi
-          path: built
+          path: tutoapi/built
 
   docker-tutoapi:
     needs: build
