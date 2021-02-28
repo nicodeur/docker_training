@@ -1,5 +1,4 @@
 const express = require('express')
-var fs = require('fs');
 
 const app = express()
 
@@ -7,7 +6,7 @@ const app = express()
 console.log("Our application is launching!");
 
 //we define a entrypoint on '/'. When a get is performed on '/', we log "youpi" and send the response
-app.get('/', function (req, res) {
+app.get('/', function (req:any, res:any) {
   console.log("youpi");
   //send the response
   res.send("Hello you!");
@@ -19,29 +18,29 @@ app.listen(3000, function () {
 })
 
 
-var mysql = require('mysql');
+let mysql = require('mysql');
 
 
-var MYSQL_HOST = process.env.MYSQL_HOST;
-var MYSQL_USER = process.env.MYSQL_USER;
-var MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
-var MYSQL_DATABASE = process.env.MYSQL_DATABASE;
+let MYSQL_HOST = process.env.MYSQL_HOST;
+let MYSQL_USER = process.env.MYSQL_USER;
+let MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
+let MYSQL_DATABASE = process.env.MYSQL_DATABASE;
 
 
 
 // Create a mysql connection object
-var con = mysql.createConnection({
+let con = mysql.createConnection({
   host: MYSQL_HOST ,
   user: MYSQL_USER ,
   password: MYSQL_PASSWORD,
   database: MYSQL_DATABASE
 });
 
-var users;
+let users: any;
 
-con.connect(function(err) {
+con.connect(function(err: any) {
   if (err) throw err;
-  con.query("SELECT * FROM USERS", function (err, result, fields) {
+  con.query("SELECT * FROM USERS", function (err: any, result: any, fields: any) {
     if (err) throw err;
     users = result;
     console.log(result);
@@ -49,7 +48,7 @@ con.connect(function(err) {
 });
 
 
-app.get('/users', function (req, res) {
+app.get('/users', function (req: any, res: any) {
   //send users value as the response
   res.send(users);
 })
