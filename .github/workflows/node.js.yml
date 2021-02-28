@@ -30,6 +30,7 @@ jobs:
       - run: npm test
   docker-tutoapi:
     needs: build
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -38,9 +39,10 @@ jobs:
       - run: docker build -t tutoapi .
   docker-database:
     needs: build
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
         working-directory: bdd
     steps:
-      - run: docker build -t tutodatabase .
+      - run: ls -al
