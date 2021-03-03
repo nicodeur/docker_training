@@ -36,6 +36,12 @@ jobs:
           name: tutoapi
           path: tutoapi/built
 
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run : echo "sonar"
+
   docker-tutoapi:
     needs: build
     runs-on: ubuntu-latest
@@ -99,3 +105,11 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'master_copy'}}
+    steps:
+      - uses: actions/checkout@v2
+      - run : echo "deploy on production"
