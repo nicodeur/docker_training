@@ -117,6 +117,15 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+  deploy-preproduction:
+    needs: [docker-database, docker-tutoapi]
+    runs-on: ubuntu-latest
+    container: google/cloud-sdk:latest
+    if: ${{ github.ref != 'master_copy'}}
+    steps:
+      - uses: actions/checkout@v2
+      - run : gcloud version
+
 
   deploy-production:
     needs: [docker-database, docker-tutoapi]
