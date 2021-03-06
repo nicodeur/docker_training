@@ -148,22 +148,24 @@ jobs:
         uses: actions/checkout@v2
       - name: Extract version
         run: echo "VERSION=$(npm run version --silent)" >> $GITHUB_ENV
+      - name: Display version
+        run: echo "$VERSION"
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: master_copy
-          custom_tag: ${{ env.GITHUB_TOKEN }}
+          custom_tag: ${{ env.VERSION }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.VERSION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body_path: releasenote/${{ env.VERSION }}.md
           draft: false
           prerelease: false
-# TODO use npm version to manage change log version and tag
+s
