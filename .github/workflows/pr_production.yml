@@ -21,5 +21,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: kentaro-m/auto-assign-action@v1.1.2
-        with:
-          configuration-path: ".github/mep-assignees.yml" # Only needed if you use something other than .github/auto_assign.yml
+      #  with:
+      #    configuration-path: ".github/mep-assignees.yml" # Only needed if you use something other than .github/auto_assign.yml
