@@ -6,3 +6,5 @@ addAssignees: true
 
 assignees:
   - nicodeur
+
+numberOfAssignees: 1
