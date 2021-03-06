@@ -1,0 +1,26 @@
+{
+   "compilerOptions": {
+     "sourceMap": true,
+     "esModuleInterop": true,
+     "allowJs": true,
+     "noImplicitAny": true,
+     "moduleResolution": "node",
+     "lib": ["es2018"],
+     "module": "commonjs",
+     "target": "es2018",
+     "strict": true,
+     "skipLibCheck": true,
+     "forceConsistentCasingInFileNames": true,
+     "baseUrl": ".",
+     "paths": {
+       "*": ["node_modules/*"]
+     },
+     "types": ["node"],
+     "typeRoots": ["node_modules/@types",
+       "src/types"
+     ],
+     "outDir": "./built"
+   },
+  "include": ["./**/*"],
+  "exclude": ["node_modules","built","test"]
+}

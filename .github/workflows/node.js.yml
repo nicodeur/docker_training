@@ -1,0 +1,162 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  build:
+    defaults:
+      run:
+        shell: bash
+        working-directory: tutoapi
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v2 # https://github.com/actions/cache
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build
+      - run: ls -al
+      - run: npm test
+#      - run: tar czvf tutoapi.tar.gz built
+      - uses: actions/upload-artifact@master
+        with:
+          name: tutoapi
+          path: tutoapi/built
+
+  sonar:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run : echo "sonar"
+
+  docker-tutoapi:
+    needs: sonar
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_TAG: nicodeur/tutoapi:latest
+      DOCKER_DIRECTORY: tutoapi
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+      - uses: actions/download-artifact@master
+        with:
+          name: tutoapi
+          path: built
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ env.DOCKER_DIRECTORY }}
+          file: ./${{ env.DOCKER_DIRECTORY }}/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_TAG }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  docker-database:
+    needs: sonar
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_TAG: nicodeur/tutobdd:latest
+      DOCKER_DIRECTORY: bdd
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ env.DOCKER_DIRECTORY }}
+          file: ./${{ env.DOCKER_DIRECTORY }}/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_TAG }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  deploy-preproduction:
+    needs: [docker-database, docker-tutoapi]
+    runs-on: ubuntu-latest
+    container: google/cloud-sdk:latest
+    if: ${{ github.ref != 'master_copy'}}
+    steps:
+      - uses: actions/checkout@v2
+      - run : gcloud version
+
+
+  deploy-production:
+    needs: [docker-database, docker-tutoapi]
+    runs-on: ubuntu-latest
+    container: google/cloud-sdk:latest
+    if: ${{ github.ref == 'master_copy'}}
+    steps:
+      - uses: actions/checkout@v2
+      - run : gcloud version
+
+  create-release-note:
+    needs: deploy-production
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: master_copy
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          draft: false
+          prerelease: false
