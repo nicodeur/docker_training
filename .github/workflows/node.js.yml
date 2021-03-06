@@ -45,13 +45,14 @@ jobs:
           path: tutoapi/built
 
   sonar:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run : echo "sonar"
 
   docker-tutoapi:
-    needs: build
+    needs: sonar
     runs-on: ubuntu-latest
     env:
       DOCKER_TAG: nicodeur/tutoapi:latest
@@ -85,7 +86,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
   docker-database:
-    needs: build
+    needs: sonar
     runs-on: ubuntu-latest
     env:
       DOCKER_TAG: nicodeur/tutobdd:latest
@@ -116,8 +117,10 @@ jobs:
 
 
   deploy-production:
+    #needs: [docker-database, docker-tutoapi]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'master_copy'}}
+    container: google/cloud-sdk:latest
+    #if: ${{ github.ref == 'master_copy'}}
     steps:
       - uses: actions/checkout@v2
-      - run : echo "deploy on production"
+      - run : gcloud version
