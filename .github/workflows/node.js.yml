@@ -40,7 +40,6 @@ jobs:
       - run: npm run build
       - run: ls -al
       - run: npm test
-#      - run: tar czvf tutoapi.tar.gz built
       - uses: actions/upload-artifact@master
         with:
           name: tutoapi
@@ -56,37 +55,12 @@ jobs:
   docker-tutoapi:
     needs: sonar
     runs-on: ubuntu-latest
-    env:
-      DOCKER_TAG: ${{ secrets.JFROG_REGISTRY }}/davidson-tutoapi:latest
-      DOCKER_DIRECTORY: tutoapi
     steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v2
-      - uses: actions/download-artifact@master
+      - name : Docker push and build
+        uses : ./.github//actions/docker-build-and-push.yml
         with:
-          name: tutoapi
-          path: built
-      - name: Login to JFrog
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ secrets.JFROG_REGISTRY }}
-          username: ${{ secrets.JFROG_USERNAME }}
-          password: ${{ secrets.JFROG_SECRET }}
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ${{ env.DOCKER_DIRECTORY }}
-          file: ./${{ env.DOCKER_DIRECTORY }}/Dockerfile
-          push: true
-          tags: ${{ env.DOCKER_TAG }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          tag: ${{ secrets.JFROG_REGISTRY }}/davidson-tutoapi:latest
+          directory: tutoapi
 
   docker-database:
     needs: sonar
