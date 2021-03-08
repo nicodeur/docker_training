@@ -56,8 +56,10 @@ jobs:
     needs: sonar
     runs-on: ubuntu-latest
     steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
       - name : Docker push and build
-        uses : ./.github//actions/docker-build-and-push
+        uses : ./.github/actions/docker-build-and-push
         with:
           tag: ${{ secrets.JFROG_REGISTRY }}/davidson-tutoapi:latest
           directory: tutoapi
