@@ -1,0 +1,11 @@
+inputs:
+  name:
+    description: 'A name to display'
+    default: 'No Name to display provided'
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.name }}.
+      shell: bash
+    - run: echo Hello again ${{ inputs.name}}.
+      shell: bash
