@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name : Docker push and build
-        uses : ./.github//actions/docker-build-and-push.yml
+        uses : ./.github//actions/docker-build-and-push
         with:
           tag: ${{ secrets.JFROG_REGISTRY }}/davidson-tutoapi:latest
           directory: tutoapi
